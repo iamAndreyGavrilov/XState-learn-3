@@ -141,7 +141,18 @@ const { state, send, service } = useMachine(addToCartMachine);
       </button>
     </div>
 
-    <div class="mt-2 text-sm text-red-600">This is an error.</div>
+    <div
+      v-if="state.context.errors.productId"
+      class="mt-2 text-sm text-red-600"
+    >
+      {{ state.context.errors.productId }}
+    </div>
+    <div v-if="state.context.errors.qty" class="mt-2 text-sm text-red-600">
+      {{ state.context.errors.qty }}
+    </div>
+    <div v-if="state.context.errors.unknown" class="mt-2 text-sm text-red-600">
+      {{ state.context.errors.unknown }}
+    </div>
   </form>
 </template>
 
