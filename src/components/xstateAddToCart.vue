@@ -1,13 +1,63 @@
 <script setup>
-import PlusIcon from "./PlusIcon";
-
-import MinusIcon from "./MinusIcon";
-
+import { createMachine } from "xstate";
 const props = defineProps({
   productId: Number,
   qty: {
     type: Number,
     defauld: 1,
+  },
+});
+
+const addToCartMachine = createMachine({
+  id: "addToCartMachine ",
+  context: {
+    productId: props.productId,
+    qty: props.qty,
+    errors: {},
+  },
+
+  initial: "idle",
+  states: {
+    idle: {
+      on: {
+        UPDATE_QTY: {
+          actions: "assignQty",
+          cond: "minQty",
+          target: "idle",
+        },
+        ADD_TO_CART: {
+          target: "adding",
+        },
+      },
+    },
+    adding: {
+      entry: "clearErrors",
+      invoke: {
+        id: "addToCart",
+        src: "addToCart",
+        onDone: {
+          target: "recentyAdded",
+        },
+        onError: {
+          actions: "assignErrors",
+          target: "idle",
+        },
+      },
+    },
+    recentyAdded: {
+      after: {
+        1000: {
+          target: "idle",
+        },
+      },
+      on: {
+        UPDATE_QTY: {
+          actions: "assignQty",
+          cond: "minQty",
+          target: "recentyAdded",
+        },
+      },
+    },
   },
 });
 </script>
@@ -20,7 +70,11 @@ const props = defineProps({
           class="p-1 rounded border-2 border-black hover:bg-yellow-400 focus:outline-none focus-visible:border-yellow-400"
           type="button"
         >
-          <MinusIcon class="h-5 w-5" />
+          <img
+            src="../assets/icons8-минус-48.png"
+            class="h-5 w-5"
+            alt="минус"
+          />
         </button>
 
         <input
@@ -33,7 +87,7 @@ const props = defineProps({
           class="p-1 rounded border-2 border-black hover:bg-yellow-400 focus:outline-none focus-visible:border-yellow-400"
           type="button"
         >
-          <PlusIcon class="w-5 h-5" />
+          <img src="../assets/icons8-plus-48.png" class="w-5 h-5" alt="плюс" />
         </button>
       </div>
 
