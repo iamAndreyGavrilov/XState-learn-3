@@ -4,7 +4,7 @@ import MinusIcon from "./MinusIcon";
 </script>
 
 <template>
-  <div>xstate</div>
+  <div>{{ PlusIcon }}</div>
 </template>
 
 <style scoped></style>
